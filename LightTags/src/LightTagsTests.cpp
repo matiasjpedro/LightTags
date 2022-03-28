@@ -20,49 +20,94 @@ enum LightTag {
 	LT_COUNT
 };
 
-bool LightTagsTests::RunTest(LightTagTest TestToRun)
-{
-	TagContainer<LT_COUNT> tags = {};
+bool LightTagsTests::RunTest(LightTagTest TestToRun){
+
+	using namespace tags_utils;
+	uint64_t my_tags[get_array_size(LT_COUNT)] = {};
+	
 
 	switch (TestToRun)
 	{
+
+#if USE_TEMPLATE_VERSION
 		case LightTagTest::LTT_ADD_SIMPLE:
 		{
-			tags.add(LT_STATE_Z);
-			tags.add(LT_ACTION_Z);
-			tags.add(LT_EXTRA_Z);
-			return tags.has_all(LT_STATE_Z, LT_ACTION_Z, LT_EXTRA_Z);
+			set(my_tags, LT_STATE_Z);
+			set(my_tags, LT_ACTION_Z);
+			set(my_tags, LT_EXTRA_Z);
+			return has_all(my_tags, LT_STATE_Z, LT_ACTION_Z, LT_EXTRA_Z);
 		}
 		case LightTagTest::LTT_ADD_MULTIPLE:
 		{
-			tags.add(LT_ACTION_A, LT_ACTION_Z);
-			return tags.has_all(LT_ACTION_A, LT_ACTION_Z);
+			set(my_tags, LT_ACTION_A, LT_ACTION_Z);
+			return has_all(my_tags, LT_ACTION_A, LT_ACTION_Z);
 		}
 		case LightTagTest::LTT_ADD_ARRAY:
 		{
 			constexpr TagHandle tags_arr[] = { LT_STATE_A, LT_STATE_Z };
-			tags.add(tags_arr, COUNT_OF(tags_arr));
-			return tags.has_all(tags_arr, COUNT_OF(tags_arr));
+			set(my_tags, tags_arr, COUNT_OF(tags_arr));
+			return has_all(my_tags, tags_arr, COUNT_OF(tags_arr));
 		}
 		case LightTagTest::LTT_REMOVE_SIMPLE:
 		{
-			tags.add(LT_STATE_B);
-			tags.remove(LT_STATE_B);
-			return !tags.has_any(LT_STATE_B);
+			set(my_tags, LT_STATE_B);
+			remove(my_tags, LT_STATE_B);
+			return !has_any(my_tags, LT_STATE_B);
 		}
 		case LightTagTest::LTT_REMOVE_MULTIPLE:
 		{
-			tags.add(LT_STATE_A, LT_STATE_Z, LT_ACTION_A);
-			tags.remove(LT_STATE_A, LT_STATE_Z, LT_ACTION_A);
-			return !tags.has_any(LT_STATE_A, LT_STATE_Z, LT_ACTION_A);
+			set(my_tags, LT_STATE_A, LT_STATE_Z, LT_ACTION_A);
+			remove(my_tags, LT_STATE_A, LT_STATE_Z, LT_ACTION_A);
+			return !has_any(my_tags, LT_STATE_A, LT_STATE_Z, LT_ACTION_A);
 		}
 		case LightTagTest::LTT_REMOVE_ARRAY:
 		{
 			constexpr TagHandle tags_arr[] = { LT_ACTION_Z, LT_EXTRA_A };
-			tags.add(tags_arr, COUNT_OF(tags_arr));
-			tags.remove(tags_arr, COUNT_OF(tags_arr));
-			return !tags.has_any(LT_ACTION_Z, LT_EXTRA_A);
+			set(my_tags, tags_arr, COUNT_OF(tags_arr));
+			remove(my_tags, tags_arr, COUNT_OF(tags_arr));
+			return !has_any(my_tags, LT_ACTION_Z, LT_EXTRA_A);
 		}
+
+#else
+		case LightTagTest::LTT_ADD_SIMPLE:
+		{
+			TAG_SET(my_tags, LT_STATE_Z);
+			TAG_SET(my_tags, LT_ACTION_Z);
+			TAG_SET(my_tags, LT_EXTRA_Z);
+			return TAG_HAS_ALL_THREE(my_tags, LT_STATE_Z, LT_ACTION_Z, LT_EXTRA_Z);
+		}
+		case LightTagTest::LTT_ADD_MULTIPLE:
+		{
+			TAG_SET_TWO(my_tags, LT_ACTION_A, LT_ACTION_Z);
+			return TAG_HAS_ALL_TWO(my_tags, LT_ACTION_A, LT_ACTION_Z);
+		}
+		case LightTagTest::LTT_ADD_ARRAY:
+		{
+			constexpr TagHandle tags_arr[] = { LT_STATE_A, LT_STATE_Z };
+			set(my_tags, tags_arr, COUNT_OF(tags_arr));
+			return has_all(my_tags, tags_arr, COUNT_OF(tags_arr));
+		}
+		case LightTagTest::LTT_REMOVE_SIMPLE:
+		{
+			TAG_SET(my_tags, LT_STATE_B);
+			TAG_REMOVE(my_tags, LT_STATE_B);
+			return !TAG_HAS_ANY(my_tags, LT_STATE_B);
+		}
+		case LightTagTest::LTT_REMOVE_MULTIPLE:
+		{
+			TAG_SET_THREE(my_tags, LT_STATE_A, LT_STATE_Z, LT_ACTION_A);
+			TAG_REMOVE_THREE(my_tags, LT_STATE_A, LT_STATE_Z, LT_ACTION_A);
+			return !TAG_HAS_ANY_THREE(my_tags, LT_STATE_A, LT_STATE_Z, LT_ACTION_A);
+		}
+		case LightTagTest::LTT_REMOVE_ARRAY:
+		{
+			constexpr TagHandle tags_arr[] = { LT_ACTION_Z, LT_EXTRA_A };
+			set(my_tags, tags_arr, COUNT_OF(tags_arr));
+			remove(my_tags, tags_arr, COUNT_OF(tags_arr));
+			return !TAG_HAS_ANY_TWO(my_tags, LT_ACTION_Z, LT_EXTRA_A);
+		}
+
+#endif
 
 		default:
 			break;
