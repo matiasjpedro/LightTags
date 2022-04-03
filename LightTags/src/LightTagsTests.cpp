@@ -84,8 +84,8 @@ bool LightTagsTests::RunTest(LightTagTest TestToRun){
 		case LightTagTest::LTT_ADD_ARRAY:
 		{
 			constexpr TagHandle tags_arr[] = { LT_STATE_A, LT_STATE_Z };
-			set(my_tags, tags_arr, COUNT_OF(tags_arr));
-			return has_all(my_tags, tags_arr, COUNT_OF(tags_arr));
+			TAG_SET_ARR(my_tags, tags_arr, COUNT_OF(tags_arr));
+			return TAG_HAS_ALL_ARR(my_tags, tags_arr, COUNT_OF(tags_arr));
 		}
 		case LightTagTest::LTT_REMOVE_SIMPLE:
 		{
@@ -102,8 +102,8 @@ bool LightTagsTests::RunTest(LightTagTest TestToRun){
 		case LightTagTest::LTT_REMOVE_ARRAY:
 		{
 			constexpr TagHandle tags_arr[] = { LT_ACTION_Z, LT_EXTRA_A };
-			set(my_tags, tags_arr, COUNT_OF(tags_arr));
-			remove(my_tags, tags_arr, COUNT_OF(tags_arr));
+			TAG_SET_ARR(my_tags, tags_arr, COUNT_OF(tags_arr));
+			TAG_REMOVE_ARR(my_tags, tags_arr, COUNT_OF(tags_arr));
 			return !TAG_HAS_ANY_TWO(my_tags, LT_ACTION_Z, LT_EXTRA_A);
 		}
 

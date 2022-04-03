@@ -4,7 +4,7 @@
 #include <initializer_list>
 #include <stdarg.h>
 
-#define USE_TEMPLATE_VERSION 1
+#define USE_TEMPLATE_VERSION 0
 #define COUNT_OF(x) (unsigned)((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
 
 struct TagHandle {
@@ -46,24 +46,24 @@ namespace tags_utils {
 		source_arr[tag_handle.tag_array_index] |= (1ULL << tag_handle.tag_bit);
 	}
 
+	void remove_single(uint64_t source_arr[], const TagHandle tag_handle) {
+		source_arr[tag_handle.tag_array_index] &= ~(1ULL << tag_handle.tag_bit);
+	}
+
+	bool is_set_single(uint64_t source_arr[], const TagHandle tag_handle) {
+		return source_arr[tag_handle.tag_array_index] & (1ULL << tag_handle.tag_bit);
+	}
+
 	void set(uint64_t source_arr[], const TagHandle* arr, unsigned arr_size) {
 		for (unsigned i = 0; i < arr_size; i++) {
 			set_single(source_arr, arr[i]);
 		}
 	}
 
-	void remove_single(uint64_t source_arr[], const TagHandle tag_handle) {
-		source_arr[tag_handle.tag_array_index] &= ~(1ULL << tag_handle.tag_bit);
-	}
-
 	void remove(uint64_t source_arr[], const TagHandle* arr, unsigned arr_size) {
 		for (unsigned i = 0; i < arr_size; i++) {
 			remove_single(source_arr, arr[i]);
 		}
-	}
-
-	bool is_set_single(uint64_t source_arr[], const TagHandle tag_handle) {
-		return source_arr[tag_handle.tag_array_index] & (1ULL << tag_handle.tag_bit);
 	}
 
 	bool has_all(uint64_t source_arr[], const TagHandle* arr, unsigned arr_size) {
@@ -171,28 +171,33 @@ namespace tags_utils {
 
 #if !USE_TEMPLATE_VERSION
 
+
 #define TAG_SET(ARR, ARG1) tags_utils::set_single(ARR, ARG1)
 #define TAG_SET_TWO(ARR, ARG1, ARG2) tags_utils::set(ARR, 2, ARG1, ARG2)
 #define TAG_SET_THREE(ARR, ARG1, ARG2, ARG3) tags_utils::set(ARR, 3, ARG1, ARG2, ARG3)
 #define TAG_SET_FOUR(ARR, ARG1, ARG2, ARG3, ARG4) tags_utils::set(ARR, 4, ARG1, ARG2, ARG3, ARG4)
 #define TAG_SET_FIVE(ARR, ARG1, ARG2, ARG3, ARG4, ARG5) tags_utils::set(ARR, 5, ARG1, ARG2, ARG3, ARG4, ARG5)
+#define TAG_SET_ARR(SRC_ARR, ARR_PTR, ARR_SIZE) tags_utils::set(SRC_ARR, ARR_PTR, ARR_SIZE)
 
 #define TAG_REMOVE(ARR, ARG1) tags_utils::remove_single(ARR, ARG1)
 #define TAG_REMOVE_TWO(ARR, ARG1, ARG2) tags_utils::remove(ARR, 2, ARG1, ARG2)
 #define TAG_REMOVE_THREE(ARR, ARG1, ARG2, ARG3) tags_utils::remove(ARR, 3, ARG1, ARG2, ARG3)
 #define TAG_REMOVE_FOUR(ARR, ARG1, ARG2, ARG3, ARG4) tags_utils::remove(ARR, 4, ARG1, ARG2, ARG3, ARG4)
 #define TAG_REMOVE_FIVE(ARR, ARG1, ARG2, ARG3, ARG4, ARG5) tags_utils::remove(ARR, 5, ARG1, ARG2, ARG3, ARG4, ARG5)
+#define TAG_REMOVE_ARR(SRC_ARR, ARR_PTR, ARR_SIZE) tags_utils::remove(SRC_ARR, ARR_PTR, ARR_SIZE)
 
 #define TAG_HAS_ALL(ARR, ARG1) tags_utils::is_set_single(ARR, ARG1)
 #define TAG_HAS_ALL_TWO(ARR, ARG1, ARG2) tags_utils::has_all(ARR, 2, ARG1, ARG2)
 #define TAG_HAS_ALL_THREE(ARR, ARG1, ARG2, ARG3) tags_utils::has_all(ARR, 3, ARG1, ARG2, ARG3)
 #define TAG_HAS_ALL_FOUR(ARR, ARG1, ARG2, ARG3, ARG4) tags_utils::has_all(ARR, 4, ARG1, ARG2, ARG3, ARG4)
 #define TAG_HAS_ALL_FIVE(ARR, ARG1, ARG2, ARG3, ARG4, ARG5) tags_utils::has_all(ARR, 5, ARG1, ARG2, ARG3, ARG4, ARG5)
+#define TAG_HAS_ALL_ARR(SRC_ARR, ARR_PTR, ARR_SIZE) tags_utils::has_all(SRC_ARR, ARR_PTR, ARR_SIZE)
 
 #define TAG_HAS_ANY(ARR, ARG1) tags_utils::is_set_single(ARR, ARG1)
 #define TAG_HAS_ANY_TWO(ARR, ARG1, ARG2) tags_utils::has_any(ARR, 2, ARG1, ARG2)
 #define TAG_HAS_ANY_THREE(ARR, ARG1, ARG2, ARG3) tags_utils::has_any(ARR, 3, ARG1, ARG2, ARG3)
 #define TAG_HAS_ANY_FOUR(ARR, ARG1, ARG2, ARG3, ARG4) tags_utils::has_any(ARR, 4, ARG1, ARG2, ARG3, ARG4)
 #define TAG_HAS_ANY_FIVE(ARR, ARG1, ARG2, ARG3, ARG4, ARG5) tags_utils::has_any(ARR, 5, ARG1, ARG2, ARG3, ARG4, ARG5)
+#define TAG_HAS_ANY_ARR(SRC_ARR, ARR_PTR, ARR_SIZE) tags_utils::has_any(SRC_ARR, ARR_PTR, ARR_SIZE)
 
 #endif
