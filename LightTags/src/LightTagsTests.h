@@ -6,11 +6,9 @@
 #pragma region ITesteable
 #define CLASS_A_TESTS_ENUM(DO) \
     DO(LTT_ADD_SIMPLE) \
-    DO(LTT_ADD_MULTIPLE) \
-    DO(LTT_ADD_ARRAY) \
     DO(LTT_REMOVE_SIMPLE) \
-    DO(LTT_REMOVE_MULTIPLE) \
-    DO(LTT_REMOVE_ARRAY)
+    DO(LTT_ADD_MULTIPLE) \
+    DO(LTT_REMOVE_MULTIPLE) 
 
 MAKE_LOGGABLE_ENUM(CLASS_A_TESTS_ENUM, LightTagTest)
 #pragma endregion
